@@ -1,0 +1,33 @@
+﻿@model InterviewManager.Models.AppointmentManager
+
+<div id='calendar'></div>
+
+<script>
+
+    $(document).ready(function () {
+
+        var viewRenderFunction = function(view, element)
+        {
+
+        };
+
+        $('#calendar').fullCalendar({
+            // put your options and callbacks here
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaDay'
+            },
+            slotMinutes: 30,
+            defaultView: 'month',
+            allDaySlot: false,
+            selectable: true,
+            events: @Html.Raw(Json.Encode(Model.Events)),
+            viewRender : viewRenderFunction
+
+
+        })
+
+    });
+
+</script>
