@@ -33,11 +33,28 @@ namespace InterviewManager
             return result.Result;
         }
 
-        public  AvailabilityResponse GetAvailability(AvailabilityRequest request)
+        public async Task<AvailabilityResponse> GetAvailability(AvailabilityRequest request)
         {
-            var result = Get(request);
+            //var result = Get(request);
 
-            return result.Result;
+            using (var client = new HttpClient())
+            {
+                var response = new AvailabilityResponse();
+
+                client.BaseAddress = new Uri(_url);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpResponseMessage resp =  await client.PostAsJsonAsync("/api/appointments/availability", request);
+                if (resp.IsSuccessStatusCode)
+                {
+                    response = await resp.Content.ReadAsAsync<AvailabilityResponse>();
+
+                    return response;
+                }
+            }
+            return null;
+            //return result.Result;
         }
 
         private async Task<AvailabilityResponse> Get(AvailabilityRequest request)

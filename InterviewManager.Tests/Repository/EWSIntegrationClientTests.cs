@@ -71,7 +71,7 @@ namespace InterviewManager.Tests.Repository
                 Users = new List<string> { "mario@rossrmsdemo.onmicrosoft.com" }
             };
 
-            var result = rep.GetAvailability(request);
+            var result = rep.GetAvailability(request).Result;
 
             Assert.IsNotNull(result.AvailabilityResult);
         }

@@ -9,7 +9,7 @@ namespace InterviewManager
 {
     interface IEWSAPIClient
     {
-        AvailabilityResponse GetAvailability(AvailabilityRequest request);
+        Task<AvailabilityResponse> GetAvailability(AvailabilityRequest request);
 
         SendEmailResponse SendEmail(SendEmailRequest request);
 

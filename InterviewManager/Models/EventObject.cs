@@ -28,6 +28,7 @@ namespace InterviewManager.Models
 
         public bool durationEditable { get; set; }
 
+        public string backgroundColor { get; set; }
 
     }
 }

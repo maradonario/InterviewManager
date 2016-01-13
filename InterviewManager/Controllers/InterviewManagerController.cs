@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -15,52 +16,64 @@ namespace InterviewManager.Controllers
             _client = new EWSIntegrationClient();
         }
 
-        public ActionResult Load(string user)
-        {
-            var response = _client.GetAvailability(new AvailabilityRequest { DurationMinutes = 60, NumberOfDaysFromNow = 40, Users = new List<string> { user} });
-            var list = new List<EventObject>();
-            foreach (var res in response.AvailabilityResult)
-            {
-               foreach(var ev in res.Availability)
-                {
-                    var e = new EventObject
-                    {
-                        start = ev.Start.ToString("o"),
-                        end = ev.End.ToString("o"),
-                        title = ev.Status,
-                        allDay = false
-                    };
-                    list.Add(e);
-                }
-            }
+        //public ActionResult Load(string user)
+        //{
+        //    var response = _client.GetAvailability(new AvailabilityRequest { DurationMinutes = 60, NumberOfDaysFromNow = 40, Users = new List<string> { user} });
+        //    var list = new List<EventObject>();
+        //    foreach (var res in response.AvailabilityResult)
+        //    {
+        //       foreach(var ev in res.Availability)
+        //        {
+        //            var e = new EventObject
+        //            {
+        //                start = ev.Start.ToString("o"),
+        //                end = ev.End.ToString("o"),
+        //                title = ev.Status,
+        //                allDay = false
+        //            };
+        //            list.Add(e);
+        //        }
+        //    }
 
-            var model = new AppointmentManager { Events = list };
+        //    var model = new AppointmentManager { Events = list };
 
-            return PartialView("_CalendarPartial", model);
-        }
+        //    return PartialView("_CalendarPartial", model);
+        //}
         // GET: InterviewManager
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            
-            var list = new List<EventObject>
+            var rep = new EWSIntegrationClient();
+
+            var request = new AvailabilityRequest
             {
-                new EventObject
-                {
-                    title = "Event 1",
-                    start = new DateTime(2016, 1, 13, 13, 0, 0).ToString("o"),
-                    end = new DateTime(2016, 1, 13, 14, 0, 0).ToString("o"),
-                    allDay = false
-
-
-        },
-                new EventObject
-                {
-                    title = "Event 2",
-                    start = new DateTime(2016, 1, 14, 13, 0, 0).ToString("o"),
-                    end = new DateTime(2016, 1, 14, 14, 0, 0).ToString("o"),
-                    allDay = false
-                }
+                DurationMinutes = 60,
+                NumberOfDaysFromNow = 30,
+                Users = new List<string> { "mario@rossrmsdemo.onmicrosoft.com" }
             };
+
+            var result = await rep.GetAvailability(request);
+
+            var obj = result.AvailabilityResult;
+            int i = 0;
+            var list = new List<EventObject>();
+
+            foreach (var avai in result.AvailabilityResult)
+            {
+                foreach(var block in avai.Availability)
+                {
+                    var eventObject = new EventObject
+                    {
+                        title = "Interviewer " + i + " Status: " + block.Status,
+                        start = block.Start.ToString("o"),
+                        end = block.End.ToString("o"),
+                        allDay = false,
+                        backgroundColor = "red"
+                    };
+                    list.Add(eventObject);
+                }
+                i++;
+            }
+            
             var model = new AppointmentManager { Events = list};
             return View(model);
         }
