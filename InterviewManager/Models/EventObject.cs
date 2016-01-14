@@ -8,6 +8,7 @@ namespace InterviewManager.Models
 {
     public class EventObject
     {
+        public string displayStart { get; set; }
         public string id { get; set; }
 
         public string title { get; set; }

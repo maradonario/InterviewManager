@@ -15,6 +15,58 @@ namespace InterviewManager.Controllers
         {
             _client = new EWSIntegrationClient();
         }
+
+        [HttpGet]
+        [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
+        public ActionResult CreateEventFormPopUp(string start)
+        {
+            var startTime = DateTime.Parse(start);
+            var first = true;
+            var list = new List<SelectListItem>();
+            var time = startTime.AddMinutes(30);
+            while (true)
+            {
+                list.Add(new SelectListItem
+                {
+                    Selected = first,
+                    Text = time.ToString("t"),
+                    Value = time.ToString("o")
+                });
+                first = false;
+                if (time.Hour == 0)
+                {
+                    break;
+                }
+                time = time.AddMinutes(30);
+
+            }
+
+            EventObject model = new EventObject { start = startTime.ToString("o"), displayStart = startTime.ToString("t") };
+            var viewModel = new CreateEventViewModel { EndTimeList = list, Event = model };
+            return PartialView("_CreateEventPartial", viewModel);
+        }
+
+        public async Task<ActionResult> CreateEvent(CreateEventViewModel eventObject)
+        {
+            var model = eventObject;
+
+            // Create EWS Appointment
+
+            var request = new CreateAppointmentRequest
+            {
+                Body = "Created From Web App",
+                End = DateTime.Parse(eventObject.Event.end).ToString(),
+                Start = DateTime.Parse(eventObject.Event.start).ToString(),
+                Location = "Web",
+                Subject = eventObject.Event.title
+
+            };
+            var rep = new EWSIntegrationClient();
+            var resp = await rep.CreateAppointment(request);
+
+            return RedirectToAction("Index");
+        }
+
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public async Task<ActionResult> Load(string user)
         {

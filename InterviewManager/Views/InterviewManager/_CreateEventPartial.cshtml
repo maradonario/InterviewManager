@@ -1,0 +1,78 @@
+﻿@model InterviewManager.Models.CreateEventViewModel
+
+<div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Schedule Interview</h4>
+        </div>
+        <div class="modal-body">
+            @using (Html.BeginForm("CreateEvent", "InterviewManager", FormMethod.Post, new { id = "create-event", @class = "form-horizontal", role = "form" }))
+            {
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="title">Title:</label>
+                    <div class="col-sm-10">
+                        @Html.TextBoxFor(model => model.Event.title, new { id = "title", @class = "form-control",  value = "Scheduled Interview" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="start">Start:</label>
+                    <div class="col-sm-10">
+                        @Html.DisplayTextFor(model => model.Event.displayStart)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="end">End:</label>
+                    <div class="col-sm-10">
+                        @Html.DropDownListFor(model => model.Event.end, Model.EndTimeList)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" id="formSubmit" class="btn btn-default">Submit</button>
+                    </div>
+                </div>
+                @Html.HiddenFor(model => model.Event.start)
+            }
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+    $("#create-event").submit(function (data) {        
+        alert("after submit");
+
+    });
+
+    //$("#formSubmit").click(function (event) {
+    //    alert("click");
+    //    $("#create-event").submit().done(alert('data'));
+    //    $("#create-event").submit(function (data) {
+    //        alert(data.created)
+    //        if (data.created) {
+    //            alert('created');
+    //            $("#myModal").modal('hide');
+    //            return;
+    //        }
+
+    //        alert("ERROR");
+    //        event.preventDefault();
+
+    //    });
+    //    alert("end");
+
+    //});
+
+
+
+
+</script>
+
+
+

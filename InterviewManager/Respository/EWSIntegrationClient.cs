@@ -26,20 +26,34 @@ namespace InterviewManager
         }
 
 
-        public CreateAppointmentResponse CreateAppointment(CreateAppointmentRequest request)
+        public async Task<CreateAppointmentResponse> CreateAppointment(CreateAppointmentRequest request)
         {
-            var result = Create(request);
+            var response = new CreateAppointmentResponse();
 
-            return result.Result;
+            using (var client = new HttpClient())
+            {
+
+                client.BaseAddress = new Uri(_url);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpResponseMessage resp = await client.PostAsJsonAsync("/api/appointments", request);
+                if (resp.IsSuccessStatusCode)
+                {
+                    response = await resp.Content.ReadAsAsync<CreateAppointmentResponse>();
+
+                    return response;
+                }
+            }
+            return response;
         }
 
         public async Task<AvailabilityResponse> GetAvailability(AvailabilityRequest request)
         {
-            //var result = Get(request);
+            var response = new AvailabilityResponse();
 
             using (var client = new HttpClient())
             {
-                var response = new AvailabilityResponse();
 
                 client.BaseAddress = new Uri(_url);
                 client.DefaultRequestHeaders.Accept.Clear();
@@ -53,32 +67,10 @@ namespace InterviewManager
                     return response;
                 }
             }
-            return null;
-            //return result.Result;
-        }
-
-        private async Task<AvailabilityResponse> Get(AvailabilityRequest request)
-        {
-            var response = new AvailabilityResponse();
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(_url);
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                HttpResponseMessage resp = await client.PostAsJsonAsync("/api/appointments/availability", request);
-                if (resp.IsSuccessStatusCode)
-                {
-                    response = await resp.Content.ReadAsAsync<AvailabilityResponse>();
-
-                    return response;
-                }
-            }
-
             return response;
         }
 
-        private async Task<SendEmailResponse> Send(SendEmailRequest request)
+        public async Task<SendEmailResponse> SendEmail(SendEmailRequest request)
         {
             var response = new SendEmailResponse();
             using (var client = new HttpClient())
@@ -97,34 +89,6 @@ namespace InterviewManager
             }
 
             return response;
-        }
-
-        private async Task<CreateAppointmentResponse> Create(CreateAppointmentRequest request)
-        {
-            var response = new CreateAppointmentResponse();
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(_url);
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                HttpResponseMessage resp = await client.PostAsJsonAsync("/api/appointments", request);
-                if (resp.IsSuccessStatusCode)
-                {
-                    response = await resp.Content.ReadAsAsync<CreateAppointmentResponse>();
-
-                    return response;
-                }
-            }
-
-            return response;
-        }
-
-        public SendEmailResponse SendEmail(SendEmailRequest request)
-        {
-            var result = Send(request);
-
-            return result.Result;
         }
     }
 }

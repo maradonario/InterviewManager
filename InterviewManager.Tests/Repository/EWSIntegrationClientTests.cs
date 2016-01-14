@@ -88,7 +88,7 @@ namespace InterviewManager.Tests.Repository
                 Subject = "Test Email from MVC App Unit Test",
             };
 
-            var result = rep.SendEmail(request);
+            var result = rep.SendEmail(request).Result;
 
             Assert.IsNotNull(result.Recipients);
         }
@@ -110,7 +110,7 @@ namespace InterviewManager.Tests.Repository
                 End = end.ToString()
             };
 
-            var result = rep.CreateAppointment(request);
+            var result = rep.CreateAppointment(request).Result;
 
             Assert.IsNotNull(result.AppointId);
         }

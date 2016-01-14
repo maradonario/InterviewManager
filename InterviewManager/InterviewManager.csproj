@@ -184,6 +184,7 @@
     <Compile Include="Models\AvailabilityResponse.cs" />
     <Compile Include="Models\CreateAppointmentRequest.cs" />
     <Compile Include="Models\CreateAppointmentResponse.cs" />
+    <Compile Include="Models\CreateEventViewModel.cs" />
     <Compile Include="Models\EventObject.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -338,6 +339,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\InterviewManager\Index.cshtml" />
     <Content Include="Views\InterviewManager\_CalendarPartial.cshtml" />
+    <Content Include="Views\InterviewManager\_CreateEventPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

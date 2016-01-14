@@ -11,8 +11,8 @@ namespace InterviewManager
     {
         Task<AvailabilityResponse> GetAvailability(AvailabilityRequest request);
 
-        SendEmailResponse SendEmail(SendEmailRequest request);
+        Task<SendEmailResponse> SendEmail(SendEmailRequest request);
 
-        CreateAppointmentResponse CreateAppointment(CreateAppointmentRequest request);
+        Task<CreateAppointmentResponse> CreateAppointment(CreateAppointmentRequest request);
     }
 }

@@ -3,28 +3,16 @@
 <div id='calendar'></div>
 <!-- Modal -->
 <div id="myModal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Schedule Interview</h4>
-            </div>
-            <div class="modal-body">
-                <p>Some text in the modal.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-
-    </div>
 </div>
 
 <script>
 
     $(document).ready(function () {
+
+        var createPopup = function(date)
+        {
+
+        };
 
         var viewRenderFunction = function (view, element) {
 
@@ -48,9 +36,12 @@
 
             if (view.name == 'agendaDay')
             {
-                $("#myModal").modal();
+                var url = "/InterviewManager/CreateEventFormPopUp?start=" + date.format();;
+                $.get( url, function( data ) {
+                    $("#myModal").html(data);
+                    $("#myModal").modal();
+                });
             }
-
         };
 
         $('#calendar').fullCalendar({
