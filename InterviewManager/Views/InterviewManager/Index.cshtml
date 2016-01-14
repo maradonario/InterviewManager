@@ -24,118 +24,18 @@
 
 </div>
 
-
-
-
-
-
 <script>
 
     $(document).ready(function () {
-        var viewRenderFunction = function (view, element) {
-            alert("after : ");
-        };
 
-        var eventList = [];
         $("#interviewerSelect").change(function()
         {
             var value = $(this).val();
-
             var url = "/InterviewManager/Load?user=" + value;
-
-            //$.get( url, function( data ) {
-            //    $( "#calendarContainer" ).html( data );
-            //    alert( "Load was performed." );
-            //});
-
-            var userArray = [];
-            userArray.push(value);
-            var requestData = {
-                Users: userArray,
-                DurationMinutes: 60,
-                NumberOfDaysFromNow: 40
-            }
-
-            var createEvent = function (element) {
-                eventList = [];
-
-
-                var event = {
-                    start: element.Start,
-                    end: element.End,
-                    title: element.Status,
-                    allDay: false
-                };
-
-                eventList.push(event);
-                alert("after : " + event.start)
-            };
-
-            $.ajax({
-                url: 'http://localhost:49485/api/appointments/availability',
-                type: 'post',
-                dataType: 'json',
-                success: function (data) {
-                    eventList = [];
-
-                    var AvailArray = data.AvailabilityResult[0].Availability;
-                    for (var i = 0; i < AvailArray.length; i++) {
-
-
-                        var event = {
-                            start: AvailArray[i].Start,
-                            end: AvailArray[i].End,
-                            title: AvailArray[i].Status,
-                            allDay: false
-                        };
-
-                        eventList.push(event);
-
-
-                    }
-                    $('#calendar').fullCalendar({
-                        // put your options and callbacks here
-                        header: {
-                            left: 'prev,next today',
-                            center: 'title',
-                            right: 'month,agendaDay'
-                        },
-                        slotMinutes: 30,
-                        defaultView: 'month',
-                        allDaySlot: false,
-                        selectable: true,
-                        events: eventList,
-                        viewRender : viewRenderFunction
-
-
-                    })
-                    //$.each(data, function (index) {
-                    //    alert(data + " " + index);
-                    //    for (var i = 0; i < index.length; i++)
-                    //    {
-                    //        var obj = index.Availability[i];
-                    //        alert(obj.Start);
-                    //    }
-
-                    //});
-
-                    //data.Availability.forEach(
-                    //    createEvent
-                    //    );
-                    //alert(eventList[0].start);
-
-
-
-                    //$('#target').html(data.msg);
-                },
-                data: requestData
+            $.get( url, function( data ) {
+                $( "#calendarContainer" ).html( data );
             });
-
-
         });
-
-
-
     });
 
     </script>

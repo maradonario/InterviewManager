@@ -15,30 +15,46 @@ namespace InterviewManager.Controllers
         {
             _client = new EWSIntegrationClient();
         }
+        [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
+        public async Task<ActionResult> Load(string user)
+        {
+            var rep = new EWSIntegrationClient();
 
-        //public ActionResult Load(string user)
-        //{
-        //    var response = _client.GetAvailability(new AvailabilityRequest { DurationMinutes = 60, NumberOfDaysFromNow = 40, Users = new List<string> { user} });
-        //    var list = new List<EventObject>();
-        //    foreach (var res in response.AvailabilityResult)
-        //    {
-        //       foreach(var ev in res.Availability)
-        //        {
-        //            var e = new EventObject
-        //            {
-        //                start = ev.Start.ToString("o"),
-        //                end = ev.End.ToString("o"),
-        //                title = ev.Status,
-        //                allDay = false
-        //            };
-        //            list.Add(e);
-        //        }
-        //    }
+            var request = new AvailabilityRequest
+            {
+                DurationMinutes = 60,
+                NumberOfDaysFromNow = 30,
+                Users = new List<string> { user }
+            };
 
-        //    var model = new AppointmentManager { Events = list };
+            var result = await rep.GetAvailability(request);
 
-        //    return PartialView("_CalendarPartial", model);
-        //}
+            var obj = result.AvailabilityResult;
+            int i = 0;
+            var list = new List<EventObject>();
+
+            foreach (var avai in result.AvailabilityResult)
+            {
+                foreach (var block in avai.Availability)
+                {
+                    var eventObject = new EventObject
+                    {
+                        title = "Interviewer " + i + " Status: " + block.Status,
+                        start = block.Start.ToString("o"),
+                        end = block.End.ToString("o"),
+                        allDay = false,
+                        backgroundColor = "red"
+                    };
+                    list.Add(eventObject);
+                }
+                i++;
+            }
+
+            var model = new AppointmentManager { Events = list };
+
+            return PartialView("_CalendarPartial", model);
+        }
+
         // GET: InterviewManager
         public async Task<ActionResult> Index()
         {

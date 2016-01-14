@@ -9,5 +9,7 @@ namespace InterviewManager.Models
     public class AppointmentManager
     {
         public ICollection<EventObject> Events { get; set; } 
+
+        public EventObject NewEvent { get; set; }
     }
 }
