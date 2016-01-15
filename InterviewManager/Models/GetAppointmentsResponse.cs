@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace InterviewManager.Models
 {
+    /// <summary>
+    /// GetAppointmentsResponse
+    /// </summary>
     public class GetAppointmentsResponse
     {
         /// <summary>
@@ -23,20 +26,43 @@ namespace InterviewManager.Models
     public class Interview
     {
         /// <summary>
+        /// Gets or sets the subject.
+        /// </summary>
+        /// <value>
+        /// The subject.
+        /// </value>
+        public string Subject { get; set; }
+
+        /// <summary>
         /// Gets or sets the start.
         /// </summary>
         /// <value>
         /// The start.
         /// </value>
-        public string Start { get; set; }
+        public DateTime Start { get; set; }
 
+        /// <summary>
+        /// Gets or sets the start view time.
+        /// </summary>
+        /// <value>
+        /// The start view time.
+        /// </value>
+        public string StartViewTime { get; set; }
         /// <summary>
         /// Gets or sets the end.
         /// </summary>
         /// <value>
         /// The end.
         /// </value>
-        public string End { get; set; }
+        public DateTime End { get; set; }
+
+        /// <summary>
+        /// Gets or sets the end view time.
+        /// </summary>
+        /// <value>
+        /// The end view time.
+        /// </value>
+        public string EndViewTime { get; set; }
 
         /// <summary>
         /// Gets or sets the time zone.
@@ -83,5 +109,6 @@ namespace InterviewManager.Models
         /// The response.
         /// </value>
         public string Response { get; set; }
+
     }
 }

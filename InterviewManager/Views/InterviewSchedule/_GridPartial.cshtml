@@ -1,0 +1,23 @@
+﻿@model InterviewManager.Models.InterviewScheduleViewModel
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Start</th>
+            <th>End</th>
+            <th>Subject</th>
+            <th>Required</th>
+            <th>Follow Up</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ foreach (var inter in Model.Appointments)
+            {
+
+                @Html.Partial("_InterviewPartial", inter);
+            }
+
+        }
+    </tbody>
+</table>
+

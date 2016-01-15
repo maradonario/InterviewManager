@@ -346,6 +346,8 @@
     <Content Include="Views\InterviewManager\_CreateEventPartial.cshtml" />
     <Content Include="Views\InterviewSchedule\Index.cshtml" />
     <Content Include="Views\InterviewSchedule\_CalendarPartial.cshtml" />
+    <Content Include="Views\InterviewSchedule\_GridPartial.cshtml" />
+    <Content Include="Views\InterviewSchedule\_InterviewPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

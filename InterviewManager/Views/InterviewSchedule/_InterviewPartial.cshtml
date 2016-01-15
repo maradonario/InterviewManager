@@ -1,0 +1,24 @@
+﻿@model InterviewManager.Models.Interview
+
+<tr >
+    <td>@Model.StartViewTime</td>
+    <td>@Model.EndViewTime</td>
+    <td>@Model.Subject</td>
+    <td>
+        @{foreach (var rec in Model.Attendees)
+                {
+                    var className = rec.Response.Equals("Unknown") ? "alert alert-danger" : "alert alert-success";
+                <div class="@className" role="alert">@rec.Email ( @rec.Response )</div>
+
+            }
+        }
+    </td>
+</tr>
+
+<script>
+    var getClass = function (response) {
+        
+    };
+</script>
+
+

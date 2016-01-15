@@ -63,8 +63,7 @@ namespace InterviewManager.Controllers
                 Recipients = eventObject.Users
 
             };
-            var service = new EWSIntegrationClient();
-            var resp = await service.CreateAppointment(request);
+            var resp = await _client.CreateAppointment(request);
 
             // Send Emails
             var emailRequest = new SendEmailRequest
@@ -74,7 +73,7 @@ namespace InterviewManager.Controllers
                 FileAttachments = new List<string>(),
                 Subject = "Automated Email After Appointment Creation"
             };
-            var sendEmailResponse = await service.SendEmail(emailRequest);
+            var sendEmailResponse = await _client.SendEmail(emailRequest);
 
             return RedirectToAction("Index");
         }
@@ -82,91 +81,14 @@ namespace InterviewManager.Controllers
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public async Task<JsonResult> GetJsonEvents(List<string> users, string start, string end)
         {
-            var rep = new EWSIntegrationClient();
-
-            var request = new AvailabilityRequest
-            {
-                DurationMinutes = 60,
-                Start = DateTime.Parse(start).ToString(),
-                End = DateTime.Parse(end).ToString(),
-                Users = users == null ? new List<string>() : users
-            };
-
-            var result = await rep.GetAvailability(request);
-
-            var obj = result.AvailabilityResult;
-            int i = 0;
-
-            // Part of a hack. for this demo we only expect <=5 users.
-            var colorIndex = 0;
-            var list = new List<EventObject>();
-
-            foreach (var avai in result.AvailabilityResult)
-            {
-
-                var color = _colors[(i == _colors.Count) ? colorIndex = 0 : colorIndex++];
-                foreach (var block in avai.Availability)
-                {
-                    var eventObject = new EventObject
-                    {
-                        title = "Interviewer " + i + " Status: " + block.Status,
-                        start = block.Start.ToString("o"),
-                        end = block.End.ToString("o"),
-                        allDay = false,
-                        backgroundColor = color
-                    };
-                    list.Add(eventObject);
-                }
-                i++;
-            }
-
-            var model = new AppointmentManager { Events = list };
-
+            var model = await CreateModel(users, start, end);
             return Json( model.Events,JsonRequestBehavior.AllowGet);
         }
 
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public async Task<ActionResult> Load(List<string> users, string start, string end)
         {
-            var rep = new EWSIntegrationClient();
-
-            var request = new AvailabilityRequest
-            {
-                DurationMinutes = 60,
-                Start = DateTime.Parse(start).ToString(),
-                End = DateTime.Parse(end).ToString(),
-                Users = users == null ? new List<string>() : users
-            };
-
-            var result = await rep.GetAvailability(request);
-
-            var obj = result.AvailabilityResult;
-            int i = 0;
-
-            // Part of a hack. for this demo we only expect <=5 users.
-            var colorIndex = 0;
-            var list = new List<EventObject>();
-
-            foreach (var avai in result.AvailabilityResult)
-            {
-
-                var color = _colors[(i == _colors.Count) ? colorIndex = 0 : colorIndex++];
-                foreach (var block in avai.Availability)
-                {
-                    var eventObject = new EventObject
-                    {
-                        title = "Interviewer " + i + " Status: " + block.Status,
-                        start = block.Start.ToString("o"),
-                        end = block.End.ToString("o"),
-                        allDay = false,
-                        backgroundColor = color
-                    };
-                    list.Add(eventObject);
-                }
-                i++;
-            }
-
-            var model = new AppointmentManager { Events = list };
+            var model = await CreateModel(users, start, end);
 
             return PartialView("_CalendarPartial", model);
         }
@@ -175,138 +97,52 @@ namespace InterviewManager.Controllers
         public ActionResult Index()
         {
             var rep = new EWSIntegrationClient();
-
-            //var request = new AvailabilityRequest
-            //{
-            //    DurationMinutes = 60,
-            //    NumberOfDaysFromNow = 30,
-            //    Users = new List<string> { "mario@rossrmsdemo.onmicrosoft.com" }
-            //};
-
-            //var result = await rep.GetAvailability(request);
-
-            //var obj = result.AvailabilityResult;
-            //int i = 0;
-            //var list = new List<EventObject>();
-
-            //foreach (var avai in result.AvailabilityResult)
-            //{
-            //    foreach(var block in avai.Availability)
-            //    {
-            //        var eventObject = new EventObject
-            //        {
-            //            title = "Interviewer " + i + " Status: " + block.Status,
-            //            start = block.Start.ToString("o"),
-            //            end = block.End.ToString("o"),
-            //            allDay = false,
-            //            backgroundColor = "red"
-            //        };
-            //        list.Add(eventObject);
-            //    }
-            //    i++;
-            //}
             
             var model = new AppointmentManager { Events = new List<EventObject>()};
             return View(model);
         }
 
-        public JsonResult GetInterviewerCalendar(DateTime start, DateTime end)
+        private async Task<AppointmentManager> CreateModel(List<string> users, string start, string end)
         {
-            var startLocal = start.ToUniversalTime();
-            var loacalEnd = end.ToUniversalTime();
-
-            var list = new List<EventObject>
+            var request = new AvailabilityRequest
             {
-                new EventObject
-                {
-                    title = "Event 1",
-                    start = new DateTime(2016, 1, 13, 13, 0, 0).ToUniversalTime().ToString("o"),
-                    end = new DateTime(2016, 1, 13, 14, 0, 0).ToUniversalTime().ToString("o"),
-                    allDay = false
-                    
-
-        },
-                new EventObject
-                {
-                    title = "Event 2",
-                    start = new DateTime(2016, 1, 14, 13, 0, 0).ToUniversalTime().ToString("o"),
-                    end = new DateTime(2016, 1, 14, 14, 0, 0).ToUniversalTime().ToString("o"),
-                    allDay = false
-                }
+                DurationMinutes = 60,
+                Start = DateTime.Parse(start).ToString(),
+                End = DateTime.Parse(end).ToString(),
+                Users = users == null ? new List<string>() : users
             };
-            return Json(list);
-        }
 
-        // GET: InterviewManager/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
+            var result = await _client.GetAvailability(request);
 
-        // GET: InterviewManager/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
+            var obj = result.AvailabilityResult;
+            int i = 0;
 
-        // POST: InterviewManager/Create
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
+            // Part of a hack. for this demo we only expect <=5 users.
+            var colorIndex = 0;
+            var list = new List<EventObject>();
+
+            foreach (var avai in result.AvailabilityResult)
             {
-                // TODO: Add insert logic here
 
-                return RedirectToAction("Index");
+                var color = _colors[(i == _colors.Count) ? colorIndex = 0 : colorIndex++];
+                foreach (var block in avai.Availability)
+                {
+                    var eventObject = new EventObject
+                    {
+                        title = "Interviewer " + i + " Status: " + block.Status,
+                        start = block.Start.ToString("o"),
+                        end = block.End.ToString("o"),
+                        allDay = false,
+                        backgroundColor = color
+                    };
+                    list.Add(eventObject);
+                }
+                i++;
             }
-            catch
-            {
-                return View();
-            }
+
+            var model = new AppointmentManager { Events = list };
+            return model;
         }
 
-        // GET: InterviewManager/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: InterviewManager/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: InterviewManager/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: InterviewManager/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }

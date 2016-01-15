@@ -17,8 +17,12 @@
     </div>
 </div>
 
-<div id="gridContainer"></div>
-<div id="calendarContainer"></div>
+<div id="gridContainer">
+    @Html.Partial("_GridPartial", Model)
+</div>
+<div id="calendarContainer">
+    @Html.Partial("_CalendarPartial", Model)
+</div>
 
 <script>
 
