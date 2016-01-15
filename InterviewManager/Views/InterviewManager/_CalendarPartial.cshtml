@@ -9,24 +9,63 @@
 
     $(document).ready(function () {
 
-        var createPopup = function(date)
-        {
-
-        };
-
+        var previousStart;
         var viewRenderFunction = function (view, element) {
+            console.log("view render");
+            console.log("view start: " + view.start.format());
+            console.log("view end: " + view.start.format());
+            if ( $('.checkbox :checked').length == 0)
+            {
+                // user is in single user view
+                var value = $("#interviewerSelect").val();
+                console.log("value from select box: " + value);
+                
+                var url = "/InterviewManager/GetJsonEvents?users=" + value + "&start=" + view.start.format() + "&end=" + view.end.format();
+                $.get(url, function (data) {
+
+                    console.log(JSON.stringify(data));
+                    //$("#calendarContainer").html(data);
+                    $('#calendar').fullCalendar('removeEvents');
+                    $('#calendar').fullCalendar('addEventSource', data);         
+                    $('#calendar').fullCalendar('rerenderEvents' );
+                });
+            }
+            else{
+                // user is in multi-user view
+                var users = [];
+                $('.checkbox :checked').each(function () {
+                    users.push( $(this).val());
+                });
+                var url = "/InterviewManager/GetJsonEvents";
+                $.get(url, $.param({ users: users, start : view.start.format(), end : view.end.format() }, true),function (data) {
+                    console.log(JSON.stringify(data));
+
+                    //$("#calendarContainer").html(data);
+                    $('#calendar').fullCalendar('removeEvents');
+                    $('#calendar').fullCalendar('addEventSource', data);         
+                    $('#calendar').fullCalendar('rerenderEvents' );
+                });
+
+
+            }
+
+
+
 
         };
 
         var eventClickFunction = function(cal_event, js_event, view)
         {
-            alert('Event: ' + calEvent.title);
-            alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-            alert('View: ' + view.name);
+
+            console.log('Event: ' + calEvent.title);
+            console.log('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+            console.log('View: ' + view.name);
         };
 
         var dayClickFunction = function(date, jsEvent, view)
         {
+            console.log('Day Click: ');
+
             if (view.name == 'month')
             {
                 $('#calendar').fullCalendar('gotoDate', date);
@@ -36,11 +75,25 @@
 
             if (view.name == 'agendaDay')
             {
-                var url = "/InterviewManager/CreateEventFormPopUp?start=" + date.format();;
-                $.get( url, function( data ) {
+                var users = [];
+                if ( $('.checkbox :checked').length == 0)
+                {
+                    // user is in single user view
+                    var value = $("#interviewerSelect").val();
+                    console.log("value from select box: " + value);
+                    users.push(value);
+                }
+                else{
+                    $('.checkbox :checked').each(function () {
+                        users.push( $(this).val());
+                    });
+                }
+                var url = "/InterviewManager/CreateEventFormPopUp";
+                $.get( url, $.param({ start: date.format(), users: users }, true), function( data ) {
                     $("#myModal").html(data);
                     $("#myModal").modal();
                 });
+
             }
         };
 

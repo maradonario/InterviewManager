@@ -174,6 +174,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InterviewManagerController.cs" />
+    <Compile Include="Controllers\InterviewScheduleController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -186,7 +187,10 @@
     <Compile Include="Models\CreateAppointmentResponse.cs" />
     <Compile Include="Models\CreateEventViewModel.cs" />
     <Compile Include="Models\EventObject.cs" />
+    <Compile Include="Models\GetAppointmentsRequest.cs" />
+    <Compile Include="Models\GetAppointmentsResponse.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\InterviewScheduleViewModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\SendEmailRequest.cs" />
     <Compile Include="Models\SendEmailResponse.cs" />
@@ -340,6 +344,8 @@
     <Content Include="Views\InterviewManager\Index.cshtml" />
     <Content Include="Views\InterviewManager\_CalendarPartial.cshtml" />
     <Content Include="Views\InterviewManager\_CreateEventPartial.cshtml" />
+    <Content Include="Views\InterviewSchedule\Index.cshtml" />
+    <Content Include="Views\InterviewSchedule\_CalendarPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

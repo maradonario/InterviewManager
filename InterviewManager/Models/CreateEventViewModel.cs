@@ -12,5 +12,7 @@ namespace InterviewManager.Models
         public EventObject Event { get; set; }
 
         public IEnumerable<SelectListItem> EndTimeList { get; set; }
+
+        public List<string> Users { get; set; }
     }
 }

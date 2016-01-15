@@ -1,0 +1,48 @@
+﻿@model InterviewManager.Models.InterviewScheduleViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Interview Schedule</h2>
+
+@*Change this to a shared view also used in InterviewManager*@
+<div class="form-group" id="viewType">
+    <label for="interviewerSelect">Select a View:</label>
+    <div class="radio">
+        <label><input type="radio" name="optradio" value="1" checked>Show Grid</label>
+    </div>
+    <div class="radio">
+        <label><input type="radio" name="optradio" value="2">Show Calendar</label>
+    </div>
+</div>
+
+<div id="gridContainer"></div>
+<div id="calendarContainer"></div>
+
+<script>
+
+        $(document).ready(function () {
+            // select single or multiple. Will either hide the dropdown for multiple or checkbox for single
+            $("input:radio").on("click", function () {
+                var value = $("input:checked").val();
+
+                // Show Grid
+                if (value == "1")
+                {
+                    $("#gridContainer").show();
+                    $("#calendarContainer").hide();
+                }
+                // Show Calendar
+                else
+                {
+                    $("#calendarContainer").show();
+                    $("#gridContainer").hide();
+                }
+            });
+        });
+
+</script>
+
+
+

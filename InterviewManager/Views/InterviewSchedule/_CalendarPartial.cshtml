@@ -1,0 +1,73 @@
+﻿@model InterviewManager.Models.InterviewScheduleViewModel
+
+@model InterviewManager.Models.AppointmentManager
+
+<div id='calendar'></div>
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        var previousStart;
+        var viewRenderFunction = function (view, element) {
+            console.log("view render");
+            console.log("view start: " + view.start.format());
+            console.log("view end: " + view.start.format());
+
+            var url = "JSON DATA URL";
+            $.get(url, function (data) {
+
+                console.log(JSON.stringify(data));
+                $('#calendar').fullCalendar('removeEvents');
+                $('#calendar').fullCalendar('addEventSource', data);
+                $('#calendar').fullCalendar('rerenderEvents' );
+            });
+        };
+
+        var eventClickFunction = function(cal_event, js_event, view)
+        {
+
+            console.log('Event: ' + calEvent.title);
+            console.log('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+            console.log('View: ' + view.name);
+
+            var url = "/InterviewSchedule/CreateEventFormPopUp";
+            $.get( url, $.param({ start: date.format() }, true), function( data ) {
+                $("#myModal").html(data);
+                $("#myModal").modal();
+                
+            });
+        }
+
+        var dayClickFunction = function(date, jsEvent, view)
+        {
+            console.log('Day: ' + calEvent.title);
+            console.log('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+            console.log('View: ' + view.name);
+            
+        };
+
+        $('#calendar').fullCalendar({
+            // put your options and callbacks here
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaDay'
+            },
+            slotMinutes: 30,
+            defaultView: 'month',
+            allDaySlot: false,
+            selectable: true,
+            events: @Html.Raw(Json.Encode(Model.Events)),
+            viewRender : viewRenderFunction,
+            eventClick : eventClickFunction,
+            dayClick : dayClickFunction
+
+        })
+
+    });
+
+</script>

@@ -48,5 +48,7 @@ namespace InterviewManager.Models
         /// </value>
         public string Location { get; set; }
 
+        public ICollection<string> Recipients { get; set; }
+
     }
 }

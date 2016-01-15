@@ -34,6 +34,10 @@
                     </div>
                 </div>
                 @Html.HiddenFor(model => model.Event.start)
+                for (int i = 0; i < Model.Users.Count; i++)
+                {
+                    @Html.HiddenFor(model => Model.Users[i])
+                }
             }
         </div>
         <div class="modal-footer">
@@ -44,30 +48,6 @@
 </div>
 
 <script>
-
-    $("#create-event").submit(function (data) {        
-        alert("after submit");
-
-    });
-
-    //$("#formSubmit").click(function (event) {
-    //    alert("click");
-    //    $("#create-event").submit().done(alert('data'));
-    //    $("#create-event").submit(function (data) {
-    //        alert(data.created)
-    //        if (data.created) {
-    //            alert('created');
-    //            $("#myModal").modal('hide');
-    //            return;
-    //        }
-
-    //        alert("ERROR");
-    //        event.preventDefault();
-
-    //    });
-    //    alert("end");
-
-    //});
 
 
 

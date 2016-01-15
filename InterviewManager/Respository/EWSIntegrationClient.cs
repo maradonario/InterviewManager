@@ -25,6 +25,27 @@ namespace InterviewManager
             _url = url;
         }
 
+        public async Task<GetAppointmentsResponse> GetAppointments(GetAppointmentsRequest request)
+        {
+            var response = new GetAppointmentsResponse();
+
+            using (var client = new HttpClient())
+            {
+
+                client.BaseAddress = new Uri(_url);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpResponseMessage resp = await client.PostAsJsonAsync("/api/appointments/details", request);
+                if (resp.IsSuccessStatusCode)
+                {
+                    response = await resp.Content.ReadAsAsync<GetAppointmentsResponse>();
+
+                    return response;
+                }
+            }
+            return response;
+        }
 
         public async Task<CreateAppointmentResponse> CreateAppointment(CreateAppointmentRequest request)
         {

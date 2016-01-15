@@ -7,8 +7,18 @@
 
 <h2>Interview Manager</h2>
 
+@*Change this to a shared view also used in InterviewSchedule*@
+<div class="form-group" id="viewType">
+    <label for="interviewerSelect">Select an Interviewer:</label>
+    <div class="radio">
+        <label><input type="radio" name="optradio" value="1" checked>Single Interviewer</label>
+    </div>
+    <div class="radio">
+        <label><input type="radio" name="optradio" value="2">Multiple Interviewers</label>
+    </div>
+</div>
 
-<div class="form-group">
+<div class="form-group" id="single">
     <label for="interviewerSelect">Select an Interviewer:</label>
     <select class="form-control" id="interviewerSelect">
         <option value="none">--</option>
@@ -18,77 +28,74 @@
     </select>
 </div>
 
-<div id="calendarContainer">
+<div class="form-group" id="multiple">
+    <div class="checkbox">
+        <label><input type="checkbox" value="mario@rossrmsdemo.onmicrosoft.com">mario@rossrmsdemo.onmicrosoft.com</label>
+    </div>
+    <div class="checkbox">
+        <label><input type="checkbox" value="interviewer1@rossrmsdemo.onmicrosoft.com">interviewer1@rossrmsdemo.onmicrosoft.com</label>
+    </div>
+    <div class="checkbox">
+        <label><input type="checkbox" value="interviewer2@rossrmsdemo.onmicrosoft.com" >interviewer2@rossrmsdemo.onmicrosoft.com</label>
+    </div>
 </div>
 
-<script>
 
-    $(document).ready(function () {
+    <div id="calendarContainer"></div>
 
-        $("#interviewerSelect").change(function()
-        {
-            var value = $(this).val();
-            var url = "/InterviewManager/Load?user=" + value;
-            $.get( url, function( data ) {
-                $( "#calendarContainer" ).html( data );
+    <script>
+
+        $(document).ready(function () {
+            // initially hide the check box
+            $("#multiple").hide();
+
+            // select single or multiple. Will either hide the dropdown for multiple or checkbox for single
+            $("input:radio").on("click", function () {
+                var value = $("input:checked").val();
+
+                if (value == "1")
+                {
+                    $("#single").show();
+                    // hide 
+                    $("#multiple").hide();
+                    // clear
+                    $('.checkbox :checked').removeAttr('checked');
+                    $('#calendar').fullCalendar('removeEvents');
+
+                }
+                else
+                {
+                    $("#single").hide();
+                    $("#multiple").show();
+                    $('#calendar').fullCalendar('removeEvents');
+
+                }
+            });
+
+
+            $("#interviewerSelect").change(function () {
+                console.log("single select");
+
+                var value = $(this).val();
+                var url = "/InterviewManager/Load?users=" + value + "&start=" + moment().format() + "&end=" + moment().add(40, 'days').format();
+                $.get(url, function (data) {
+                    $("#calendarContainer").html(data);
+                });
+            });
+
+            $("input[type=checkbox]").on("click", function () {
+                console.log("multi select");
+
+                var users = [];
+                $('.checkbox :checked').each(function () {
+                    users.push( $(this).val());
+                });
+                var url = "/InterviewManager/Load";
+                $.get(url, $.param({ users: users, start: moment().format(), end: moment().add(40, 'days').format() }, true), function (data) {
+                    $("#calendarContainer").html(data);
+                });
             });
         });
-    });
 
     </script>
-
-
-
-
-@*<!DOCTYPE html>
-<html>
-<head>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
-    @Styles.Render("~/Content/calendar")
-
-
-
-        <script src="~/Scripts/jquery-1.11.3.js"></script>
-        <script src="~/Scripts/moment.js"></script>
-        <script src="~/Scripts/fullcalendar.js"></script>
-</head>
-<body>
-    <h2>Interview Manager</h2>
-
-    <select>
-
-    </select>
-
-    <div id='calendar'></div>
-</body>
-</html>
-<script>
-    $(document).ready(function () {
-        var viewRenderFunction = function(view, element)
-        {
-            alert('Trigger');
-            alert(view.start);
-        };
-
-        $('#calendar').fullCalendar({
-            // put your options and callbacks here
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'month,agendaDay'
-            },
-            slotMinutes: 30,
-            defaultView: 'month',
-            allDaySlot: false,
-            selectable: true,
-            events: @Html.Raw(Json.Encode(Model.Events)),
-            viewRender : viewRenderFunction
-
-
-        })
-
-    });
-
-</script>*@
 

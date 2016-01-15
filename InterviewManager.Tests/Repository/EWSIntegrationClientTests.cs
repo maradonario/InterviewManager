@@ -67,7 +67,8 @@ namespace InterviewManager.Tests.Repository
             var request = new AvailabilityRequest
             {
                 DurationMinutes = 60,
-                NumberOfDaysFromNow = 30,
+                Start = DateTime.UtcNow.ToString(),
+                End = DateTime.UtcNow.AddDays(30).ToString(),
                 Users = new List<string> { "mario@rossrmsdemo.onmicrosoft.com" }
             };
 
